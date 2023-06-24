@@ -87,6 +87,26 @@ Please discuss and comment the following questions:
    change to allow calculations saving and querying on database level? (imagine we have 1M entries in the database, what would be your approach?)
 4. Suggest possible upgrades and changes to improve the project (both content and technical).
 
+Answers to the questions above:
+
+1. We could add another endpoint which would return all laps (including their durations) of a particular user, based on the user's id or username.
+2. Time complexity of finding the fastest lap in my case is O(n^2) because I used 2 for loops
+   (outer loop - iterating over different RFIDs, inner loop - iterating over consecutive measurements of each RFID, to calculate duration of each lap).
+   Time complexity could perhaps be improved if we used different data structures like dictionaries or hashmaps for faster lookups,
+   which could bring the time complexity down to linear.
+3. To make the project code appropriate for use with a database we would need to:
+   - setup a database system and connect it to the IDE we are developing in,
+   - clearly define database entities and then create corresponding classes in C# to properly match the database entities,
+   - use/implement some sort of ORM (Object Relational Mapping) to convert between the C# objects and database entities,
+   - update the code so we are no longer saving objects in the memory and use database operations like querying,
+   - implement some sort of optimization, caching and batch queries to improve performance (in the case of a large amount of entries),
+   - update unit tests to work with a database
+4. I would add some more controllers and endpoints for handling:
+   - user authentication (as I did - perhaps using JWT token authentication),
+   - user result display,
+   - different track locations,
+   - teams of users for competing in groups
+
 ## Submission
 
 Please create and share a private GitHub repository with [ZigaByte](https://github.com/ZigaByte) and notify us by email.

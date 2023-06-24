@@ -28,7 +28,7 @@ public class AuthController :  ControllerBase
         var registrationResult = _registerService.RegisterUser(user);
         return registrationResult switch
         {
-            RegisterService.RegistrationResult.Success => Ok(),
+            RegisterService.RegistrationResult.Success => Ok(user),
             RegisterService.RegistrationResult.UsernameExists => BadRequest("This username already exists!"),
             RegisterService.RegistrationResult.InvalidEmail => BadRequest("This E-mail address is invalid!"),
             RegisterService.RegistrationResult.PasswordTooShort => BadRequest("Your password is too short (min. 5 characters)!"),
