@@ -1,12 +1,10 @@
-using System.Diagnostics.Metrics;
 using InterviewAssignement.Models;
 using InterviewAssignment.Services;
 using Newtonsoft.Json;
-using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace UnitTestProject;
 
-public class FastestLapTests
+public class MeasurementTests
 {
     private FastestLapService _fastestLapService;
     private MeasurementService _measurementService;
