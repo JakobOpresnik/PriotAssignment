@@ -21,9 +21,9 @@ public class AuthController :  ControllerBase
     }
 
 
-    public IActionResult PostRegister([FromBody] string json)
+    public IActionResult PostRegister([FromBody] string req)
     {
-        var user = JsonSerializer.Deserialize<UserDto>(json);
+        var user = JsonSerializer.Deserialize<UserDto>(req);
 
         var registrationResult = _registerService.RegisterUser(user);
         return registrationResult switch
@@ -36,9 +36,9 @@ public class AuthController :  ControllerBase
         };
     }
 
-    public IActionResult PostLogin([FromBody] string json)
+    public IActionResult PostLogin([FromBody] string req)
     {
-        var user = JsonSerializer.Deserialize<UserDto>(json);
+        var user = JsonSerializer.Deserialize<UserDto>(req);
 
         var allUsers = RegisterService.allUsers;
         
@@ -49,5 +49,35 @@ public class AuthController :  ControllerBase
         }
         // JWT token is returned
         return Ok(loginResult);
+    }
+
+    public IActionResult PostLogout([FromBody] string req)
+    {
+        var user = JsonSerializer.Deserialize<User>(req);
+
+        var allUsers = RegisterService.allUsers;
+
+        var logoutResult = _loginService.LogoutUser(user, allUsers);
+        return logoutResult switch
+        {
+            LoginService.LogoutResult.Success => Ok(user),
+            LoginService.LogoutResult.UserNotLoggedIn => BadRequest("User was not logged in!"),
+            LoginService.LogoutResult.UserNotFound => BadRequest("This user does not exist!"),
+            _ => Ok()
+        };
+    }
+    
+    public IActionResult DeleteUser([FromBody] string req)
+    {
+        var user = JsonSerializer.Deserialize<User>(req);
+
+        var deletionResult = _registerService.DeleteUser(user);
+        return deletionResult switch
+        {
+            RegisterService.AccountDeletionResult.Success => Ok(user),
+            RegisterService.AccountDeletionResult.UserNotLoggedIn => BadRequest("User was not logged in!"),
+            RegisterService.AccountDeletionResult.UserNotFound => BadRequest("This user does not exist!"),
+            _ => Ok()
+        };
     }
 }

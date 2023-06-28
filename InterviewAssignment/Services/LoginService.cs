@@ -43,6 +43,7 @@ public class LoginService
             if (u.username == user.username)
             {
                 var token = generateJwt(user);
+                u.token = token;
                 return token;
             }
             
@@ -52,6 +53,33 @@ public class LoginService
             }
         }
         return "User doesn't exist!";
+    }
+
+    public LogoutResult LogoutUser(User user, List<User> allUsers)
+    {
+        foreach (var u in allUsers)
+        {
+            // if the user is found
+            if (u.username == user.username)
+            {
+                // if the user is logged in (has a JWT token)
+                if (u.token != "")
+                {
+                    // reset the user's JWT token
+                    u.token = "";
+                    return LogoutResult.Success;
+                }
+                return LogoutResult.UserNotLoggedIn;
+            }
+        }
+        return LogoutResult.UserNotFound;
+    }
+
+    public enum LogoutResult
+    {
+        Success,
+        UserNotFound,
+        UserNotLoggedIn
     }
     
 }

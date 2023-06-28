@@ -68,7 +68,7 @@ public class AuthTests
         // arrange
         var json_1 = @"
             {
-                'username': 'jakob',
+                'username': 'jakob1',
                 'email': 'j.opresnik@gmail.com',
                 'password': '123'
             }";
@@ -95,6 +95,116 @@ public class AuthTests
         var actualResult = _loginService.LoginUser(user_2, allUsers);
         var expectedResult = "User doesn't exist!";
         
+        // assert
+        Assert.That(actualResult, Is.EqualTo(expectedResult));
+    }
+
+    [Test]
+    public void LogoutUserNotLoggedIn()
+    {
+        // arrange
+        var json = @"
+            {
+                'username': 'jakob3',
+                'email': 'j.opresnik@gmail.com',
+                'password': '12345',
+                'token': ''
+            }";
+
+        var user = JsonConvert.DeserializeObject<User>(json);
+        
+        
+        // act
+        var allUsers = new List<User>();
+        allUsers.Add(user);
+        
+        var actualResult = _loginService.LogoutUser(user, allUsers);
+        LoginService.LogoutResult expectedResult = LoginService.LogoutResult.UserNotLoggedIn;
+        
+        // assert
+        Assert.That(actualResult, Is.EqualTo(expectedResult));
+    }
+    
+    [Test]
+    public void LogoutUserNotFound()
+    {
+        // arrange
+        var json = @"
+            {
+                'username': 'jakob4',
+                'email': 'j.opresnik@gmail.com',
+                'password': '12345',
+                'token': '123'
+            }";
+
+        var user = JsonConvert.DeserializeObject<User>(json);
+        
+        
+        // act
+        var allUsers = new List<User>();
+        
+        var actualResult = _loginService.LogoutUser(user, allUsers);
+        LoginService.LogoutResult expectedResult = LoginService.LogoutResult.UserNotFound;
+        
+        // assert
+        Assert.That(actualResult, Is.EqualTo(expectedResult));
+    }
+
+    [Test]
+    public void DeleteUserNotLoggedIn()
+    {
+        // arrange
+        var json = @"
+            {
+                'username': 'jakob5',
+                'email': 'j.opresnik@gmail.com',
+                'password': '12345'
+            }";
+
+        var user = JsonConvert.DeserializeObject<UserDto>(json);
+        if (_registerService.RegisterUser(user) == RegisterService.RegistrationResult.Success)
+        {
+            User u = new User()
+            {
+                username = user.username,
+                email = user.email,
+                passwordHash = BCrypt.Net.BCrypt.HashPassword(user.password),
+                token = ""  // not logged in
+            };
+
+            // act
+            var actualResult = _registerService.DeleteUser(u);
+            RegisterService.AccountDeletionResult expectedResult = RegisterService.AccountDeletionResult.UserNotLoggedIn;
+        
+            // assert
+            Assert.That(actualResult, Is.EqualTo(expectedResult));
+        }
+    }
+    
+    [Test]
+    public void DeleteUserNotFound()
+    {
+        // arrange
+        var json = @"
+            {
+                'username': 'jakob6',
+                'email': 'j.opresnik@gmail.com',
+                'password': '12345'
+            }";
+
+        var user = JsonConvert.DeserializeObject<UserDto>(json);
+        User u = new User()
+        {
+            username = user.username,
+            email = user.email,
+            passwordHash = BCrypt.Net.BCrypt.HashPassword(user.password),
+            token = ""
+        };
+
+        // act
+        var actualResult = _registerService.DeleteUser(u);
+        RegisterService.AccountDeletionResult expectedResult = RegisterService.AccountDeletionResult.UserNotFound;
+    
         // assert
         Assert.That(actualResult, Is.EqualTo(expectedResult));
     }
