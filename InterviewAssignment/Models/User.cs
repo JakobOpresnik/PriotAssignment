@@ -7,4 +7,5 @@ public class User
     public string email { get; set; }
     public string passwordHash { get; set; }
     public string token { get; set; }
+    public List<Measurement> measurements { get; set; }
 }

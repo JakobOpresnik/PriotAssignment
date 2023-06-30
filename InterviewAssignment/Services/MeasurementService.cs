@@ -12,6 +12,16 @@ public class MeasurementService
         // check for valid RFID
         if (measurement.rfid[0] == 'E' && measurement.rfid.Length == 9)
         {
+            var allUsers = RegisterService.allUsers;
+            foreach (var user in allUsers)
+            {
+                // add measurement to logged in user
+                if (user.token == "")
+                {
+                    user.measurements.Add(measurement);
+                }
+            }
+            
             // save incoming measurement
             measurements.Add(measurement);
             return true;

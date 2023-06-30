@@ -6,22 +6,7 @@ public class UserMeasurementsService
 {
     public List<Measurement> GetUserMeasurements(User user)
     {
-        var allMeasurements = MeasurementService.measurements;
-        var userMeasurements = new List<Measurement>();
-        foreach (var measurement in allMeasurements)
-        {
-            if (measurement.rfid == user.id)
-            {
-                userMeasurements.Add(measurement);
-            }
-        }
-        return userMeasurements;
-    }
-
-    public bool CheckUserMeasurement(User user, Measurement measurement)
-    {
-        if (user.id == measurement.rfid) return true;
-        return false;
+        return user.measurements;
     }
 
     public List<Lap> OrderUserLaps(User user)
@@ -34,7 +19,7 @@ public class UserMeasurementsService
             TimeSpan duration = (userMeasurements[i + 1].date.TimeOfDay - userMeasurements[i].date.TimeOfDay).Duration();
             Lap lap = new Lap
             {
-                rfid = user.id,
+                rfid = userMeasurements[i].rfid,
                 duration = duration,
                 measurements = userMeasurements
             };

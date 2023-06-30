@@ -25,9 +25,6 @@ public class RegisterService
 
     public RegistrationResult RegisterUser(UserDto newUser)
     {
-        //string newID = generateUniqueID();
-        //newUser.id = newID;
-
         foreach (var u in allUsers)
         {
             if (u.username == newUser.username)
@@ -44,7 +41,8 @@ public class RegisterService
             id = generateUniqueID(),
             username = newUser.username,
             email = newUser.email,
-            passwordHash = BCrypt.Net.BCrypt.HashPassword(newUser.password)  // hash password using BCrypt
+            passwordHash = BCrypt.Net.BCrypt.HashPassword(newUser.password),  // hash password using BCrypt
+            measurements = new List<Measurement>()  // empty list of measurements at first
         };
 
         allUsers.Add(user);
