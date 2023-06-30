@@ -99,8 +99,8 @@ Answers to the questions above:
    - clearly define database entities and then create corresponding classes in C# to properly match the database entities,
    - use/implement some sort of ORM (Object Relational Mapping) to convert between the C# objects and database entities,
    - update the code so we are no longer saving objects in the memory and use database operations like querying,
-   - implement some sort of optimization, caching and batch queries to improve performance (in the case of a large amount of entries),
-   - update unit tests to work with a database
+   - implement some sort of optimization, caching and batch queries to improve performance (in case of large amounts of entries),
+   - update unit tests so they are compatible with database usage
 4. I would add some more controllers and endpoints for handling:
    - user authentication (as I did - perhaps using JWT token authentication),
    - user result display,

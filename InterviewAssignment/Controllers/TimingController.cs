@@ -11,21 +11,21 @@ public class MeasurementController : ControllerBase {
     private readonly ILogger<MeasurementController> _logger;
     private readonly MeasurementService _measurementService;
     private readonly FastestLapService _fastestLapService;
+    private readonly UserMeasurementsService _userMeasurementsService;
 
-    public MeasurementController(ILogger<MeasurementController> logger, MeasurementService measurementService, FastestLapService fastestLapService) {
+    public MeasurementController(ILogger<MeasurementController> logger, MeasurementService measurementService, FastestLapService fastestLapService, UserMeasurementsService userMeasurementsService) {
         _logger = logger;
         _measurementService = measurementService;
         _fastestLapService = fastestLapService;
+        _userMeasurementsService = userMeasurementsService;
     }
 
-
-    private List<Measurement> memory = new List<Measurement>();
     
     // endpoint to get a measurement
-    public IActionResult PostMeasurement([FromBody] string json)
+    public IActionResult PostMeasurement([FromBody] string req)
     {
         // deserialize JSON string to C# object
-        var measurement = JsonSerializer.Deserialize<Measurement>(json);
+        var measurement = JsonSerializer.Deserialize<Measurement>(req);
         
         if (_measurementService.HandlePayload(measurement))
         {
@@ -38,9 +38,9 @@ public class MeasurementController : ControllerBase {
 
     
     // endpoint to get sorted list of laps by duration
-    public IActionResult GetFastestLaps([FromBody] string json)
+    public IActionResult GetFastestLaps([FromBody] string req)
     {
-        var laps = JsonSerializer.Deserialize<List<Lap>>(json);
+        var laps = JsonSerializer.Deserialize<List<Lap>>(req);
 
         var measurements = MeasurementService.measurements;
         
@@ -50,5 +50,31 @@ public class MeasurementController : ControllerBase {
             return Ok();
         }
         return BadRequest(new { error = "Sorting failed!" });
+    }
+    
+    
+    // endpoint to get all measurements of a particular user
+    public IActionResult GetUserMeasurements([FromBody] string req)
+    {
+        var user = JsonSerializer.Deserialize<User>(req);
+        var userMeasurements = _userMeasurementsService.GetUserMeasurements(user);
+        if (userMeasurements.Count == 0)
+        {
+            return BadRequest("This user has no measurements yet!");
+        }
+        return Ok(userMeasurements);
+    }
+    
+    
+    // endpoint to get all laps of a particular user sorted by duration
+    public IActionResult GetSortedUserLaps([FromBody] string req)
+    {
+        var user = JsonSerializer.Deserialize<User>(req);
+        var sortedUserLaps = _userMeasurementsService.OrderUserLaps(user);
+        if (sortedUserLaps.Count == 0)
+        {
+            return BadRequest("This user has no laps yet!");
+        }
+        return Ok(sortedUserLaps);
     }
 }

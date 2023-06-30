@@ -41,6 +41,7 @@ public class RegisterService
 
         var user = new User
         {
+            id = generateUniqueID(),
             username = newUser.username,
             email = newUser.email,
             passwordHash = BCrypt.Net.BCrypt.HashPassword(newUser.password)  // hash password using BCrypt

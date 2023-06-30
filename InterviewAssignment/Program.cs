@@ -2,8 +2,11 @@ using InterviewAssignment.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<FastestLapService>();
-builder.Services.AddSingleton<MeasurementService>();
+builder.Services.AddScoped<FastestLapService>();        // scoped service - tied to a specific user request or session
+builder.Services.AddSingleton<MeasurementService>();    // singleton service - created only once throughout the lifetime of the app
+builder.Services.AddScoped<RegisterService>();
+builder.Services.AddScoped<LoginService>();
+builder.Services.AddScoped<UserMeasurementsService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
